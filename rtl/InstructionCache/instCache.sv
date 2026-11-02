@@ -29,7 +29,7 @@ module instCache #(
     output logic       					memReadReq,
     output logic [31:0] 				memAddress
 );
-    if (BYPASS_CACHE) begin
+    if (BYPASS_CACHE) begin :  gen_bypass
 
         assign memAddress      = address;
         assign memReadReq      = readReq;
@@ -37,7 +37,7 @@ module instCache #(
         assign dataOut         = memData[31:0];
         assign unalignedAccess = 1'b0;
 
-    end else begin
+    end else begin : gen_cache
 
         localparam int ALIGN_BITS       = 2;
         localparam int WORD_OFFSET_BITS = (WORD_PER_LINES == 1) ? 0 : $clog2(WORD_PER_LINES);
@@ -50,10 +50,11 @@ module instCache #(
         wire [HALF_WORD_WIDTH-1:0] curWord;
         assign curWord = address[1 +: HALF_WORD_WIDTH];
 
-        if (WORD_PER_LINES == 1)
+        if (WORD_PER_LINES == 1) begin : gen_single_word
             assign unalignedAccess = (address[1:0] == 2'b10);
-        else
+        end else begin : gen_multy_word
             assign unalignedAccess = (curWord == {HALF_WORD_WIDTH{1'b1}});
+        end
 
         wire [INDEX_BITS-1:0] curIndex;
         assign curIndex = address[ALIGN_BITS + WORD_OFFSET_BITS +: INDEX_BITS];
@@ -200,12 +201,11 @@ module instCache #(
                     end
                 end
                 MISS_REQ: begin
-                    waitReq    = 1'b1;
+                    waitReq    = memWaitReq;
                     memReadReq = 1'b1;
                     if (!memWaitReq) begin
                         storeNewData = 1'b1;
                         waitReq      = 1'b0;
-                        memReadReq   = 1'b0;
                     end
                 end
             endcase

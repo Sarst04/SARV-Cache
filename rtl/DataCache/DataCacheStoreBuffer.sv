@@ -79,6 +79,7 @@ module data_cache_store_buffer #(
             case ({push, pop})
                 2'b10:   count <= count + 1'b1;
                 2'b01:   count <= count - 1'b1;
+                default: ;
             endcase
         end
     end
@@ -98,6 +99,7 @@ module data_cache_store_buffer #(
                 	BYTE: fwdWord[bufAddr[idx][1:0]*8 +: 8] =  bufData[idx][7:0];
                 	HALF: fwdWord[bufAddr[idx][1:0]*8 +: 16] = bufData[idx][15:0];
                 	WORD: fwdWord = bufData[idx];
+                    default: ;
             	endcase
         	end
    		end

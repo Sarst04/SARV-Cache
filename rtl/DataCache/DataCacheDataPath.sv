@@ -57,6 +57,7 @@ module data_cache_data_path #(
             BYTE:   mergedWrData[storeBufHeadAddr[1:0]*8 +: 8]  = storeBufHeadData[7:0];
             HALF:   mergedWrData[storeBufHeadAddr[1:0]*8 +: 16] = storeBufHeadData[15:0];
             WORD:   mergedWrData = storeBufHeadData;
+            default: ;
         endcase
     end
 
@@ -66,6 +67,7 @@ module data_cache_data_path #(
             BYTE:   cacheDataOut = {24'b0, fwdWord[curOff*8 +: 8]};
             HALF:   cacheDataOut = {16'b0, fwdWord[curOff*8 +: 16]};
             WORD:   cacheDataOut = fwdWord;
+            default: ;
         endcase
     end
 
