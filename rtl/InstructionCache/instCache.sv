@@ -205,7 +205,7 @@ module instCache #(
                     memReadReq = 1'b1;
                     if (!memWaitReq) begin
                         storeNewData = 1'b1;
-                        waitReq      = 1'b0;
+                        memReadReq   = 1'b0;
                     end
                 end
             endcase
